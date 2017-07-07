@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+	<meta charset="utf-8" />
+    <script src="Scripts/vue.js"></script>
+    <script src="Scripts/vue.min.js"></script>
+</head>
+<body>
+    <div id="app">{{message}}</div>
+    <div id="app2"><span v-bind:title="message">滑鼠移動到此暫停查看隱藏訊息</span><span title="{{message}}">AAAA</span></div>
+    
+    <div id="app3"><span v-if="seen">看不到</span><button v-on:click="show">{{(seen==true)?"隱藏":"顯示"}}</button></div>
+
+    <div>
+        <div id="app4" style="width: 40%;display: inline-flex;">
+            <ol>
+                <li v-for="todo in todos">{{todo.text}}</li>
+            </ol>
+        </div>
+        <div style="width: 10%;display: inline-flex;">
+            <button onclick="move('left')"><</button>
+            <button onclick="move('right')">></button>
+        </div>
+        <div id="app41" style="width: 40%;display: inline-flex;">
+            <ol>
+                <li v-for="todo in todos">{{todo.text}}</li>
+            </ol>
+        </div>
+    </div>
+
+    <div id="app5">{{message}}<button type="button" v-on:click="reverseMessage">反轉</button></div>
+
+    <div id="app6">{{message}}<input type="text" v-model="message" /></div>
+
+    <div id="app7">
+        <ol>
+            <todo-item v-for="item in items" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+        </ol>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                message: "Hello Vue!",
+            }
+        });
+
+        var app2 = new Vue({
+            el: "#app2",
+            data: {
+                message: "頁面加載於:" + new Date(),
+            }
+        });
+
+        var app3 = new Vue({
+            el: "#app3",
+            data: {
+                seen: true,
+                status: "隱藏",
+            },
+            methods:{
+                show: function () {
+                    this.seen = !this.seen;
+                    this.status = this.seen ? "隱藏" : "顯示";
+                }
+            }
+        });
+
+        var app4 = new Vue({
+            el: "#app4",
+            data: {
+                todos: [
+                    { id:0, text: "大阪" },
+                    { id:1, text: "東京" },
+                    { id:2, text: "札幌" },
+                ]
+            }
+        });
+
+        var app41 = new Vue({
+            el: "#app41",
+            data: {
+                todos: [],
+            }
+        });
+
+        var app5 = new Vue({
+            el: "#app5",
+            data: {
+                message: "Hello Vue!",
+            },
+            methods: {
+                reverseMessage: function () {
+                    this.message = this.message.split(" ").reverse().join(" ");
+                }
+            }
+        });
+
+        var app6 = new Vue({
+            el: "#app6",
+            data: {
+                message: "Two way binding",
+            }
+        });
+
+        Vue.component("todo-item", {
+            props: ['todo'],
+            template: "<li>{{todo.text}}</li>",
+        });
+        var app7 = new Vue({
+            el: "#app7",
+            data: {
+                items: [
+                    { text: "大阪" },
+                    { text: "東京" },
+                    { text: "札幌" },
+                ]
+            }
+        });
+
+        function move(side) {
+            var from = side === "left" ? app41 : side === "right" ? app4 : null,
+                to = side === "left" ? app4 : side === "right" ? app41 : null;
+
+            if (from == null || to == null) return;
+
+            if (from.todos.length > 0) {
+                to.todos.push(from.todos.pop());
+            }
+        };
+    </script>
+</body>
+</html>
